@@ -1,9 +1,12 @@
 package com.zhou.criminalintent;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -14,12 +17,15 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class CrimeFragment  extends Fragment {
     private static final String ARG_CRIME_ID = "crime_id";
+    private static final String DIALOG_DATE = "DialogDate";
+    private static final int REQUEST_DATE = 0;
 
-    private Crime crime;
+    private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolveCheckBox;
@@ -40,7 +46,7 @@ public class CrimeFragment  extends Fragment {
 //        crime = new Crime();
 //        UUID crimeId = (UUID) getActivity().getIntent().getSerializableExtra(CrimeActivity.EXTRA_CRIME_ID);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
-        crime = CrimeLab.getCrimeLab(getActivity()).getCrime(crimeId);
+        mCrime = CrimeLab.getCrimeLab(getActivity()).getCrime(crimeId);
 
     }
 
@@ -50,7 +56,7 @@ public class CrimeFragment  extends Fragment {
         View view = inflater.inflate(R.layout.fragment_crime, container, false);
 
         mTitleField = view.findViewById(R.id.crime_title);
-        mTitleField.setText(crime.getmTitle());
+        mTitleField.setText(mCrime.getmTitle());
         mTitleField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -59,7 +65,7 @@ public class CrimeFragment  extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                crime.setmTitle(charSequence.toString());
+                mCrime.setmTitle(charSequence.toString());
             }
 
             @Override
@@ -69,18 +75,45 @@ public class CrimeFragment  extends Fragment {
         });
 
         mDateButton = view.findViewById(R.id.crime_date);
-        mDateButton.setText(crime.getmDate().toString());
-        mDateButton.setEnabled(false);
+        updateDate();
+//        mDateButton.setEnabled(false);
+        mDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager manager = getFragmentManager();
+//                DatePickerFragment dialog = new DatePickerFragment();
+                DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getmDate());
+                dialog.setTargetFragment(CrimeFragment.this,REQUEST_DATE);
+                dialog.show(manager,DIALOG_DATE);
+            }
+        });
 
         mSolveCheckBox = view.findViewById(R.id.crime_solved);
-        mSolveCheckBox.setChecked(crime.ismSolved());
+        mSolveCheckBox.setChecked(mCrime.ismSolved());
         mSolveCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                crime.setmSolved(isChecked);
+                mCrime.setmSolved(isChecked);
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_DATE) {
+            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            mCrime.setmDate(date);
+            updateDate();
+        }
+    }
+
+    private void updateDate() {
+        mDateButton.setText(mCrime.getmDate().toString());
     }
 }
