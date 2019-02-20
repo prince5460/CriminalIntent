@@ -1,5 +1,51 @@
-<android.support.v7.widget.RecyclerView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/crime_recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/crime_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginBottom="0dp" />
+
+    <TextView
+        android:id="@+id/crime_set_empty_text_view"
+        android:layout_width="135dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/click"
+        android:layout_alignStart="@+id/crime_recycler_view"
+        android:layout_alignLeft="@+id/crime_recycler_view"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="128dp"
+        android:layout_marginLeft="128dp"
+        android:layout_marginEnd="148dp"
+        android:layout_marginRight="148dp"
+        android:layout_marginBottom="19dp"
+        android:gravity="center"
+        android:text="没有数据显示"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/click"
+        android:layout_width="167dp"
+        android:layout_height="51dp"
+        android:layout_alignStart="@+id/crime_recycler_view"
+        android:layout_alignLeft="@+id/crime_recycler_view"
+        android:layout_alignEnd="@+id/crime_recycler_view"
+        android:layout_alignRight="@+id/crime_recycler_view"
+        android:layout_alignBottom="@+id/crime_recycler_view"
+        android:layout_marginStart="122dp"
+        android:layout_marginLeft="122dp"
+        android:layout_marginEnd="121dp"
+        android:layout_marginRight="121dp"
+        android:layout_marginBottom="297dp"
+        android:gravity="center"
+        android:text="Create New Crime" />
+</RelativeLayout>
